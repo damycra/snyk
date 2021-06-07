@@ -15,14 +15,12 @@ export function getHandlerType(
     return SUPPORTED_HANDLER_TYPES.REQUIREMENTS;
   } else if (['Pipfile'].includes(path.base)) {
     return SUPPORTED_HANDLER_TYPES.PIPFILE;
+  } else if (['pyproject.toml', 'poetry.lock'].includes(path.base)) {
+    return SUPPORTED_HANDLER_TYPES.POETRY;
   }
   return null;
 }
 
 export function isRequirementsTxtManifest(targetFile: string): boolean {
   return targetFile.endsWith('.txt');
-}
-
-export function isPipfileManifest(targetFile: string): boolean {
-  return targetFile.endsWith('Pipfile') || targetFile.endsWith('Pipfile.lock');
 }
