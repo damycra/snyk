@@ -1,4 +1,9 @@
 import { DepGraphData } from '@snyk/dep-graph';
+import * as fs from 'fs';
+import * as pathLib from 'path';
+
+import { readFileHelper } from './read-file-helper';
+
 import {
   EntityToFix,
   ScanResult,
@@ -22,6 +27,34 @@ export function generateEntityToFix(
   return { scanResult, testResult, workspace, options: cliTestOptions };
 }
 
+export function generateEntityToFixWithFileReadWrite(
+  workspacesPath: string,
+  targetFile: string,
+  testResult: TestResult,
+): EntityToFix {
+  const scanResult = generateScanResult('pip', targetFile);
+  const cliTestOptions = {
+    command: 'python3',
+  };
+
+  const workspace = {
+    path: workspacesPath,
+    readFile: async (path: string) => {
+      return readFileHelper(workspacesPath, path);
+    },
+    writeFile: async (path: string, contents: string) => {
+      const res = pathLib.parse(path);
+      const fixedPath = pathLib.resolve(
+        workspacesPath,
+        res.dir,
+        `fixed-${res.base}`,
+      );
+      fs.writeFileSync(fixedPath, contents, 'utf-8');
+    },
+  };
+  return { scanResult, testResult, workspace, options: cliTestOptions };
+}
+
 function generateWorkspace(contents: string, path?: string) {
   return {
     path: path ?? '.',
@@ -33,6 +66,7 @@ function generateWorkspace(contents: string, path?: string) {
     },
   };
 }
+
 export function generateScanResult(
   type: string,
   targetFile: string,
