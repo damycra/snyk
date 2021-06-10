@@ -5,10 +5,13 @@ description = ""
 authors = ["ghe <email@email.io>"]
 
 [tool.poetry.dependencies]
-python = "*"
+python = "^3.6"
+six = "1.16.0"
+Jinja2 = "2.11.2"
 
 [tool.poetry.dev-dependencies]
-json-api = "0.1.21"
+ldap3 = "2.3"
+
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
