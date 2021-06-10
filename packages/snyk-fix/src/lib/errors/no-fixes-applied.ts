@@ -4,7 +4,7 @@ export class NoFixesCouldBeAppliedError extends CustomError {
   public constructor() {
     super(
       'No fixes could be applied',
-      ERROR_CODES.UnsupportedTypeError,
+      ERROR_CODES.NoFixedCouldBeApplied,
     );
   }
 }

@@ -45,7 +45,7 @@ async function fix(...args: MethodArgs): Promise<string> {
     (res) => Object.keys(res.testResult.issues).length,
   );
   const { dryRun, quiet } = options;
-  const { fixSummary, meta } = await snykFix.fix(results, { dryRun, quiet });
+  const { fixSummary, meta } = await snykFix.fix(vulnerableResults, { dryRun, quiet });
 
   // `snyk test` did not return any test results
   if (results.length === 0) {
