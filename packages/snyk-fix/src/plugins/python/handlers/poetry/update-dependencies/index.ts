@@ -38,21 +38,18 @@ export async function updateDependencies(
 
     // update prod first
 
-
     // update dev after
-    console.log(remediation.pin);
     const upgrades = generateUpgrades(remediation.pin);
     if (!options.dryRun) {
-      const res = await poetryFix.poetryAdd(
-        dir,
-        upgrades,
-        {
-          // python: entity.options.command,
-        },
-      );
+      const res = await poetryFix.poetryAdd(dir, upgrades, {
+        // python: entity.options.command,
+      });
       if (res.exitCode !== 0) {
         poetryCommand = res.command;
-        throwPoetryError(res.stderr, res.command);
+        throwPoetryError(
+          res.stderr ? res.stderr : res.stdout,
+          res.command,
+        );
       }
     }
     const changes = generateSuccessfulChanges(remediation.pin);
@@ -103,19 +100,10 @@ export function generateUpgrades(pins: DependencyPins): string[] {
 }
 
 function throwPoetryError(stderr: string, command?: string) {
-  // const errorStr = stderr.toLowerCase();
-  // const incompatibleDeps =
-  //   'There are incompatible versions in the resolved dependencies';
-  // const lockingFailed = 'Locking failed';
-  // const versionNotFound = 'Could not find a version that matches';
-  // if (stderr.includes(incompatibleDeps.toLocaleLowerCase())) {
-  //   throw new CommandFailedError(incompatibleDeps, command);
-  // }
-  // if (errorStr.includes(lockingFailed.toLocaleLowerCase())) {
-  //   throw new CommandFailedError(lockingFailed, command);
-  // }
-  // if (stderr.includes(versionNotFound.toLocaleLowerCase())) {
-  //   throw new CommandFailedError(versionNotFound, command);
-  // }
+  const INCOMPATIBLE_PYTHON = new RegExp(/Python requirement (.*) is not compatible/g, 'gm');
+  const match = INCOMPATIBLE_PYTHON.exec(stderr);
+  if (match) {
+    throw new CommandFailedError(`The current project's Python requirement ${match[1]} is not compatible with some of the required packages`, command);
+  }
   throw new NoFixesCouldBeAppliedError();
 }

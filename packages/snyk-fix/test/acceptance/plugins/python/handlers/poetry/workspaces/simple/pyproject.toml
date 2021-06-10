@@ -5,8 +5,9 @@ description = ""
 authors = ["ghe <email@email.io>"]
 
 [tool.poetry.dependencies]
-python = "*"
+python = "^3.6"
 six = "1.16.0"
+Jinja2 = "2.11.2"
 
 
 [build-system]

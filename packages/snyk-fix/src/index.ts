@@ -10,6 +10,7 @@ import { FixHandlerResultByPlugin } from './plugins/types';
 
 import { EntityToFix, ErrorsByEcoSystem, FixedMeta, FixOptions } from './types';
 import { convertErrorToUserMessage } from './lib/errors/error-to-user-message';
+import { partitionByFixable } from './plugins/python/handlers/is-supported';
 export { EntityToFix } from './types';
 
 const debug = debugLib('snyk-fix:main');
